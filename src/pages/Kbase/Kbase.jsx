@@ -19,9 +19,9 @@ function Kbase() {
 
   return (
     <div className="max-w-screen-xl px-4 py-3 mx-auto md:px-6 pt-16">
-      <div className="flex justify-between">
+      <div className="sm:flex block justify-between">
         <h1 className="text-4xl font-extralight">Knowledgebase</h1>
-        <div>
+        <div className="sm:mt-0 mt-10">
           <a
             href="/knowledgebase/pending"
             class="hover:bg-blue-800 focus:ring-4 hover:text-white font-medium rounded-lg text-md px-10 py-2.5 mr-2 mb-2  border border-blue-700 text-blue-700"

@@ -225,7 +225,7 @@ function ViewTicket() {
         <div className="mt-3">
           <h1 className="text-xl">Ticket Information</h1>
         </div>
-        <div className="grid grid-cols-4 gap-6 py-2]">
+        <div className="grid sm:grid-cols-4 grid-cols-1 sm:gap-6 gap-1 py-2]">
           {/* Data table of tickets */}
           <div className="col-span-1">
             <div className="">

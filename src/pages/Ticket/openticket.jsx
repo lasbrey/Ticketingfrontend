@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Dialog } from "@headlessui/react";
 import { Done } from "@mui/icons-material";
 import instance from "../../middleware/axios";
+// import axios from "axios";
+
 
 
 const initialTicket = {
@@ -40,7 +42,7 @@ function Openticket() {
     event.preventDefault();
     try {
       const response = await instance.post(
-        `/submitticket`,
+        `http://localhost:5000/submitticket`,
         ticket,
         {
           headers: { "Content-Type": "application/json" },
