@@ -59,9 +59,7 @@ function ViewTicket() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await instance.get(
-          `/ticket/${ticketID}`
-        );
+        const response = await instance.get(`/ticket/${ticketID}`);
         setTicket(response.data.ticket);
         setReplies(response.data.replies);
       } catch (error) {

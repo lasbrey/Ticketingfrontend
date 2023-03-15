@@ -42,7 +42,7 @@ function Openticket() {
     event.preventDefault();
     try {
       const response = await instance.post(
-        `http://localhost:5000/submitticket`,
+        `/submitticket`,
         ticket,
         {
           headers: { "Content-Type": "application/json" },
@@ -91,6 +91,7 @@ function Openticket() {
  
 
   return (
+
     <div className="max-w-screen-xl px-4 py-3 mx-auto md:px-6 pt-16">
       <Dialog
         open={isCreateSuccess}
