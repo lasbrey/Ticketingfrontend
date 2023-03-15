@@ -12,9 +12,8 @@ function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    
     <div>
-       <Dialog
+      <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
         className="relative z-50"
@@ -123,30 +122,7 @@ function Header() {
                   Home
                 </Link>
               </li>
-              <li>
-                <Menu>
-                  <Menu.Button className="hover:underline">Knowledgebase</Menu.Button>
-                  <Menu.Items className="grid absolute mt-2 shadow-md max-w-[200px] w-full ">
-                    {links.map((link) => (
-                      /* Use the `active` state to conditionally style the active item. */
-                      <Menu.Item key={link.href} as={Fragment} className="">
-                        {({ active }) => (
-                          <Link
-                            to={link.href}
-                            className={`${
-                              active
-                                ? "bg-blue-500 text-white p-2"
-                                : "bg-white text-black p-2"
-                            }`}
-                          >
-                            {link.label}
-                          </Link>
-                        )}
-                      </Menu.Item>
-                    ))}
-                  </Menu.Items>
-                </Menu>
-              </li>
+
               <li>
                 <Link to="/tickets" className="text-gray-900 hover:underline ">
                   Tickets
@@ -167,6 +143,32 @@ function Header() {
                 >
                   Open Ticket
                 </Link>
+              </li>
+              <li>
+                <Menu>
+                  <Menu.Button className="hover:underline">
+                    Knowledgebase
+                  </Menu.Button>
+                  <Menu.Items className="grid absolute mt-2 shadow-md max-w-[200px] w-full ">
+                    {links.map((link) => (
+                      /* Use the `active` state to conditionally style the active item. */
+                      <Menu.Item key={link.href} as={Fragment} className="">
+                        {({ active }) => (
+                          <Link
+                            to={link.href}
+                            className={`${
+                              active
+                                ? "bg-blue-500 text-white p-2"
+                                : "bg-white text-black p-2"
+                            }`}
+                          >
+                            {link.label}
+                          </Link>
+                        )}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Items>
+                </Menu>
               </li>
             </ul>
           </div>

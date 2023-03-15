@@ -69,6 +69,7 @@ function ViewTicket() {
 
     fetchData();
   }, [ticketID]);
+  
   const deleteData = async (id) => {
     try {
       const response = await instance.delete(`/ticket/${id}`);
@@ -170,7 +171,7 @@ function ViewTicket() {
                   ref={replyRef}
                 />
               </div>
-
+ 
               <div className="mb-4">
                 <label
                   for="message"
