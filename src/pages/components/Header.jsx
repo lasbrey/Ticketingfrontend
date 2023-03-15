@@ -32,7 +32,7 @@ function Header() {
             <div className=" bg-white p-5 shadow-sm">
               <div class="mb-4">
                 <label
-                  for="name"
+                  for="email"
                   class="block mb-2 text-sm font-medium text-gray-500"
                 >
                   Name
@@ -40,7 +40,7 @@ function Header() {
                 <input
                   type="name"
                   id="name"
-                  class=" border border-gray-300 text-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full .5 "
+                  class=" border border-gray-300 text-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                   required
                 />
               </div>
