@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Dialog } from "@headlessui/react";
 import instance from "../../middleware/axios";
-
+import ThemedSuspense from "../../pages/components/ThemedSuspense";
+import Page404 from "../page404";
 import {
   Edit,
   Person,
@@ -21,6 +22,7 @@ const initialReply = {
 function ViewTicket() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isDelete, setIsDelete] = useState(false);
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
   const { ticketID } = useParams();
@@ -62,8 +64,12 @@ function ViewTicket() {
         const response = await instance.get(`/ticket/${ticketID}`);
         setTicket(response.data.ticket);
         setReplies(response.data.replies);
+        setLoading(false);
+        if (response.data.ticket.status === "Closed") {
+          setSolvedTicket(true);
+        }
       } catch (error) {
-        console.error(error);
+        setLoading(false);
       }
     };
 
@@ -71,17 +77,16 @@ function ViewTicket() {
   }, [ticketID]);
 
   // Define the closeTicket function
-  async function closeTicket(id) {
+  const closeTicket = async (id) => {
     try {
-      await instance.put(`/ticket/close/${id}`);
+      await instance.post(`/ticket/close/${id}`);
       window.location.reload();
     } catch (error) {
       console.error(error);
     }
-  }
-
-  // Define the deleteData function
-  async function deleteData(id) {
+  };
+  // Define the deleteTicket function
+  const deleteData = async (id) => {
     try {
       await instance.delete(`/ticket/${id}`);
       setIsDeleteSuccess(true);
@@ -92,21 +97,18 @@ function ViewTicket() {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   // Handle the close button click
-  function handleCloseClick() {
-    closeTicket(ticketID);
-  }
-
+  const handleCloseClick = () => closeTicket(ticketID);
   // Handle the delete button click
-  function handleDeleteClick() {
-    deleteData(ticketID);
+  const handleDeleteClick = () => deleteData(ticketID);
+  if (loading) {
+    return <ThemedSuspense />;
   }
-  if (ticket.status === "Closed") {
-    setSolvedTicket(true);
+  if (!ticket.subject) {
+    return <Page404 />;
   }
-
   return (
     <div className="max-w-screen-xl px-4 py-3 mx-auto md:px-6 pt-16">
       <Dialog
@@ -280,10 +282,14 @@ function ViewTicket() {
               <div className="flex justify-between">
                 <button
                   type="button"
-                  onClick={handleCloseClick}
-                  class="text-white bg-blue-700 hover:bg-blue-800 font-medium text-md px-10 py-2.5 my-2"
+                  className="text-white bg-blue-700 hover:bg-blue-800 font-medium text-md px-10 py-2.5 my-2"
+                  onClick={
+                    ticket.status === "Closed"
+                      ? () => setIsOpen(true)
+                      : handleCloseClick
+                  }
                 >
-                  Close
+                  {ticket.status === "Closed" ? "Reply" : "Close"}
                 </button>
                 <button
                   type="button"
@@ -311,8 +317,8 @@ function ViewTicket() {
                       <NotificationImportant sx={{ fontSize: 70 }} />
                     </div>
                     <p className="text-2xl font-bold text-center">
-                      Note: This ticket has been closed <br></br>Reply the ticket to
-                      reopen it
+                      Note: This ticket has been closed <br></br>Reply the
+                      ticket to reopen it
                     </p>
                     <div className="w-full flex justify-center items-center mt-4">
                       <button
