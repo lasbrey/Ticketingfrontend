@@ -9,6 +9,7 @@ import {
   Download,
   SupervisorAccount,
   HighlightOff,
+  NotificationImportant,
   Done,
 } from "@mui/icons-material";
 
@@ -24,6 +25,7 @@ function ViewTicket() {
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
   const { ticketID } = useParams();
   const [ticket, setTicket] = useState([]);
+  const [solvedTicket, setSolvedTicket] = useState(false);
   const [replies, setReplies] = useState([]);
   const [reply, setReply] = useState([initialReply]);
   const [errMsg, setErrMsg] = useState("");
@@ -39,11 +41,9 @@ function ViewTicket() {
   const handleSubmit = async (event) => {
     // event.preventDefault();
     try {
-      const response = await instance.post(
-        `/ticket/${ticket.ticketID}`,
-        reply,
-        { withCredentials: true }
-      );
+      await instance.post(`/ticket/${ticket.ticketID}`, reply, {
+        withCredentials: true,
+      });
       setReply("");
       setSccMsg("Reply added successfully");
     } catch (err) {
@@ -69,23 +69,44 @@ function ViewTicket() {
 
     fetchData();
   }, [ticketID]);
-  
-  const deleteData = async (id) => {
+
+  // Define the closeTicket function
+  async function closeTicket(id) {
     try {
-      const response = await instance.delete(`/ticket/${id}`);
+      await instance.put(`/ticket/close/${id}`);
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Define the deleteData function
+  async function deleteData(id) {
+    try {
+      await instance.delete(`/ticket/${id}`);
       setIsDeleteSuccess(true);
       setIsDelete(false);
       setTimeout(() => {
         navigate("/");
-      }, 2000); // wait for 2000 milliseconds (i.e. 2 seconds)
+      }, 2000);
     } catch (error) {
-      console.error(error); // handle error
+      console.error(error);
     }
-  };
-  const handleDeleteClick = () => {
-    const id = ticketID; // set the ID of the data to be deleted
-    deleteData(id);
-  };
+  }
+
+  // Handle the close button click
+  function handleCloseClick() {
+    closeTicket(ticketID);
+  }
+
+  // Handle the delete button click
+  function handleDeleteClick() {
+    deleteData(ticketID);
+  }
+  if (ticket.status === "Closed") {
+    setSolvedTicket(true);
+  }
+
   return (
     <div className="max-w-screen-xl px-4 py-3 mx-auto md:px-6 pt-16">
       <Dialog
@@ -171,7 +192,7 @@ function ViewTicket() {
                   ref={replyRef}
                 />
               </div>
- 
+
               <div className="mb-4">
                 <label
                   for="message"
@@ -259,10 +280,10 @@ function ViewTicket() {
               <div className="flex justify-between">
                 <button
                   type="button"
-                  onClick={() => setIsOpen(true)}
+                  onClick={handleCloseClick}
                   class="text-white bg-blue-700 hover:bg-blue-800 font-medium text-md px-10 py-2.5 my-2"
                 >
-                  Reply
+                  Close
                 </button>
                 <button
                   type="button"
@@ -277,6 +298,34 @@ function ViewTicket() {
           <div className="col-span-3">
             {/* Ticket message */}
 
+            <Dialog
+              open={solvedTicket}
+              onClose={() => setSolvedTicket(false)}
+              className="relative z-50"
+            >
+              <div className="fixed inset-0 bg-black/30 " aria-hidden="true" />
+              <div className="fixed inset-0 flex items-center justify-center p-4">
+                <Dialog.Panel>
+                  <div className="bg-white p-10 shadow-sm">
+                    <div className="flex items-center justify-center text-red-600">
+                      <NotificationImportant sx={{ fontSize: 70 }} />
+                    </div>
+                    <p className="text-2xl font-bold text-center">
+                      Note: This ticket has been closed <br></br>Reply the ticket to
+                      reopen it
+                    </p>
+                    <div className="w-full flex justify-center items-center mt-4">
+                      <button
+                        class="text-white bg-blue-700 hover:bg-blue-800  font-medium  text-sm px-5 py-2.5 text-center"
+                        onClick={() => setSolvedTicket(false)}
+                      >
+                        Proceed
+                      </button>
+                    </div>
+                  </div>
+                </Dialog.Panel>
+              </div>
+            </Dialog>
             <div className="mb-2 bg-white rounded-sm">
               {errMsg && (
                 <div className="bg-red-500 text-white w-full p-4" ref={errRef}>
