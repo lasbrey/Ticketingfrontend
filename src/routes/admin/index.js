@@ -7,6 +7,8 @@ const Kbase = lazy(() => import("../../pages/Admin/kbase.jsx"));
 const PendingKbase = lazy(() => import("../../pages/Admin/pendingkbase.jsx"));
 const Logs = lazy(() => import("../../pages/Admin/logs.jsx"));
 const ViewTicket = lazy(() => import("../../pages/Admin/viewticket.jsx"));
+const ViewKbase = lazy(() => import("../../pages/Admin/viewkbase.jsx"));
+const OpenKbase = lazy(() => import("../../pages/Admin/openkbase.jsx"));
 
 
 const routes = [
@@ -31,8 +33,16 @@ const routes = [
     component: ClosedTicket,
   },
   {
+    path: "/admin/knowledgebase/post", // url
+    component: OpenKbase, // Component to render
+  },
+  {
     path: "/admin/knowledgebase",
     component: Kbase,
+  },
+  {
+    path: "/admin/knowledgebase/:title", // url
+    component: ViewKbase, // Component to render
   },
   {
     path: "/admin/pendingknowledgebase",

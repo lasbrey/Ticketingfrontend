@@ -6,12 +6,14 @@ import instance from "../../middleware/axios";
 
 function Kbase() {
   const [kbase, setKbase] = useState([]);
+  
   const fetchData = () => {
     instance.get(`/knowledgebase`).then((res) => {
-      const data = res.data;
+      const data = res.data.filter((item) => item.status !== "pending");
       setKbase(data);
     });
   };
+  
 
   useEffect(() => {
     fetchData();
@@ -66,13 +68,7 @@ function Kbase() {
                         {data.title}
                       </div>
                     </div>
-                    {data.status === "pending" ? (
-                      <span className="text-white text-sm bg-red-400 p-1 rounded-sm mr-1">
-                        Pending
-                      </span>
-                    ) : (
-                      ""
-                    )}
+                  
                     <span class="text-sm">By: {data.department}</span>
                   </div>
                 </div>

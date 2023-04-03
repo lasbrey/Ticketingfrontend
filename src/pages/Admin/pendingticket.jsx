@@ -5,10 +5,9 @@ import instance from "../../middleware/axios";
 function PendingTicket() {
   const [ticket, setTickets] = useState([]);
   const reversedTickets = ticket.slice().reverse();
-
   const fetchData = () => {
     instance.get(`/tickets`).then((res) => {
-      const data = res.data;
+      const data = res.data.filter((item) => item.status === "Pending");
       setTickets(data);
     });
   };

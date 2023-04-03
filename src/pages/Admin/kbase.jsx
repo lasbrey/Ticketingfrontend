@@ -23,13 +23,13 @@ function Kbase() {
         <h1 className="text-4xl font-extralight">Knowledgebase</h1>
         <div className="sm:mt-0 mt-10">
           <a
-            href="/knowledgebase/pending"
+            href="/admin/knowledgebase/pending"
             class="hover:bg-blue-800 focus:ring-4 hover:text-white font-medium rounded-lg text-md px-10 py-2.5 mr-2 mb-2  border border-blue-700 text-blue-700"
           >
             Pending
           </a>
           <a
-            href="/knowledgebase/post"
+            href="/admin/knowledgebase/post"
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-10 py-2.5 mr-2 mb-2  focus:outline-none dark:focus:ring-blue-800"
           >
             Post
@@ -60,7 +60,7 @@ function Kbase() {
           <h1 className="text-3xl font-extralight mb-5">Departments</h1>
           {kbase.length > 0 ? (
             kbase.map((data, i) => (
-              <Link to={`/knowledgebase/${data.title}`}>
+              <Link to={`/admin/knowledgebase/${data.title}`}>
                 <div
                   class="flex bg-white p-5 cursor-pointer hover:bg-gray-200"
                   key={i}

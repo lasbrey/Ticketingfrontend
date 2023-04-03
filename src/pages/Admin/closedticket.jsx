@@ -8,7 +8,7 @@ function ClosedTicket() {
 
   const fetchData = () => {
     instance.get(`/tickets`).then((res) => {
-      const data = res.data;
+      const data = res.data.filter((item) => item.status === "Closed");
       setTickets(data);
     });
   };

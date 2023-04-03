@@ -4,7 +4,6 @@ import Logo from "../assets/logo.png";
 import { Menu } from "@headlessui/react";
 
 const links = [
-  { href: "/knowledgebase/pending", label: "Pending Posts" },
   { href: "/knowledgebase", label: "All Posts" },
   { href: "/knowledgebase/post", label: "Create Post" },
 ];

@@ -7,8 +7,8 @@ import instance from "../../middleware/axios";
 function PendingKbase() {
   const [kbase, setKbase] = useState([]);
   const fetchData = () => {
-    instance.get(`/knowledgebase/post/pending`).then((res) => {
-      const data = res.data;
+    instance.get(`/knowledgebase`).then((res) => {
+      const data = res.data.filter((item) => item.status === "pending");
       setKbase(data);
     });
   };
@@ -27,7 +27,7 @@ function PendingKbase() {
         <div className="col-span-2">
           {kbase.length > 0 ? (
             kbase.map((data, i) => (
-              <Link to={`/knowledgebase/${data.title}`}>
+              <Link to={`/admin/knowledgebase/${data.title}`}>
               <div
                 class="flex bg-white p-5 cursor-pointer hover:bg-gray-200"
                 key={i}
