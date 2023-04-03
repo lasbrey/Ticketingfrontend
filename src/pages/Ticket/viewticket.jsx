@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Dialog } from "@headlessui/react";
 import instance from "../../middleware/axios";
-import cloudinary from "../../middleware/cloudinary";
+// import cloudinary from "../../middleware/cloudinary";
 import ThemedSuspense from "../../pages/components/ThemedSuspense";
 import Page404 from "../page404";
 import {
@@ -27,7 +27,7 @@ function ViewTicket() {
   const [replies, setReplies] = useState([]);
   const [reply, setReply] = useState([initialReply]);
   const [errMsg, setErrMsg] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  // const [imageUrl, setImageUrl] = useState("");
   const [sccMsg, setSccMsg] = useState("");
   const replyRef = useRef();
   const errRef = useRef();
@@ -36,12 +36,11 @@ function ViewTicket() {
     const { name, value } = event.target;
     setReply((prevReply) => ({ ...prevReply, [name]: value }));
   };
-
-  const handleUpload = async (event) => {
-    const file = event.target.files[0];
-    const uploadResponse = await cloudinary.uploader.upload(file);
-    setImageUrl(uploadResponse.url);
-  };
+  // const handleUpload = async (event) => {
+  //   const file = event.target.files[0];
+  //   const uploadResponse = await cloudinary.uploader.upload(file);
+  //   setImageUrl(uploadResponse.url);
+  // };
   const handleSubmit = async (event) => {
     // event.preventDefault();
     try {
@@ -59,8 +58,8 @@ function ViewTicket() {
       errRef.current.focus();
     }
   };
-   // const imageLen = ticket.image.length;
-   useEffect(() => {
+  // const imageLen = ticket.image.length;
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await instance.get(`/ticket/${ticketID}`);
@@ -86,8 +85,6 @@ function ViewTicket() {
   }
   return (
     <div className="max-w-screen-xl px-4 py-3 mx-auto md:px-6 pt-16">
-    
-    
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
@@ -143,10 +140,10 @@ function ViewTicket() {
                 <input
                   class="relative m-0 block w-full min-w-0 flex-auto cursor-pointer border border-solid border-neutral-300 bg-white bg-clip-padding px-3 py-1.5 text-base font-normal text-neutral-700 outline-none transition duration-300 ease-in-out file:-mx-3 file:-my-1.5 file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-1.5 file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[margin-inline-end:0.75rem] file:[border-inline-end-width:1px] hover:file:bg-neutral-200 focus:border-primary focus:bg-white focus:text-neutral-700 focus:shadow-[0_0_0_1px] focus:shadow-primary focus:outline-none "
                   type="file"
-                  onChange={handleUpload}
+                  // onChange={handleUpload}
                   id="formFile"
                 />
-                {imageUrl && <img src={imageUrl} alt="uploaded" />}
+                {/* {imageUrl && <img src={imageUrl} alt="uploaded" />} */}
 
                 <p class="mt-1 text-sm text-gray-500" id="file_input_help">
                   SVG, PNG, JPG or GIF (MAX. 800x400px).
@@ -209,7 +206,6 @@ function ViewTicket() {
                   </p>{" "}
                 </div>
               </div>
-             
             </div>
           </div>
           <div className="col-span-3">
