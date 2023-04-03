@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Dialog } from "@headlessui/react";
 import instance from "../../middleware/axios";
 import cloudinary from "../../middleware/cloudinary";
@@ -10,7 +10,9 @@ import {
   Person,
   Download,
   SupervisorAccount,
+  HighlightOff,
   NotificationImportant,
+  Done,
 } from "@mui/icons-material";
 
 const initialReply = {
@@ -19,8 +21,11 @@ const initialReply = {
   // image: "",
 };
 function ViewTicket() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isDelete, setIsDelete] = useState(false);
+  const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
   const { ticketID } = useParams();
   const [ticket, setTicket] = useState([]);
   const [solvedTicket, setSolvedTicket] = useState(false);
@@ -59,8 +64,8 @@ function ViewTicket() {
       errRef.current.focus();
     }
   };
-   // const imageLen = ticket.image.length;
-   useEffect(() => {
+  // const imageLen = ticket.image.length;
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await instance.get(`/ticket/${ticketID}`);
@@ -78,6 +83,33 @@ function ViewTicket() {
     fetchData();
   }, [ticketID]);
 
+  // Define the closeTicket function
+  const closeTicket = async (id) => {
+    try {
+      await instance.post(`/ticket/close/${id}`);
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  // Define the deleteTicket function
+  const deleteData = async (id) => {
+    try {
+      await instance.delete(`/ticket/${id}`);
+      setIsDeleteSuccess(true);
+      setIsDelete(false);
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Handle the close button click
+  const handleCloseClick = () => closeTicket(ticketID);
+  // Handle the delete button click
+  const handleDeleteClick = () => deleteData(ticketID);
   if (loading) {
     return <ThemedSuspense />;
   }
@@ -85,9 +117,56 @@ function ViewTicket() {
     return <Page404 />;
   }
   return (
-    <div className="max-w-screen-xl px-4 py-3 mx-auto md:px-6 pt-16">
-    
-    
+    <div className="m-4 p-4 sm:ml-64 py-3 pt-16">
+      <Dialog
+        open={isDeleteSuccess}
+        onClose={() => setIsDeleteSuccess(false)}
+        className="relative z-50"
+      >
+        <div className="fixed inset-0 bg-black/30 " aria-hidden="true" />
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel>
+            <div className="bg-white p-10 shadow-sm">
+              <div className="flex items-center justify-center text-green-600">
+                <Done sx={{ fontSize: 70 }} />
+              </div>
+              <p className="text-2xl font-bold">Ticket deleted successfully</p>
+            </div>
+          </Dialog.Panel>
+        </div>
+      </Dialog>
+      <Dialog
+        open={isDelete}
+        onClose={() => setIsDelete(false)}
+        className="relative z-50"
+      >
+        <div className="fixed inset-0 bg-black/30 " aria-hidden="true" />
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel>
+            <div className="bg-white p-10 shadow-sm">
+              <div className="flex items-center justify-center text-red-600">
+                <HighlightOff sx={{ fontSize: 70 }} />
+              </div>
+              <p className="text-2xl font-bold text-center">Confirm Delete?</p>
+              <p>This action cannot be undone.</p>
+              <div className="w-full grid grid-cols-2 gap-4 mt-4">
+                <button
+                  class="text-white bg-red-700 hover:bg-red-800 font-medium  text-sm px-5 py-2.5 text-center"
+                  onClick={handleDeleteClick}
+                >
+                  Confrim
+                </button>
+                <button
+                  class="text-white bg-blue-700 hover:bg-blue-800  font-medium  text-sm px-5 py-2.5 text-center"
+                  onClick={() => setIsDelete(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </Dialog.Panel>
+        </div>
+      </Dialog>
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
@@ -171,14 +250,12 @@ function ViewTicket() {
         </div>
       </Dialog>
       <div>
-        <div className="flex">
+        <div className="flex pt-5">
           <h1 className="text-4xl font-extralight">{ticket.subject}</h1>
         </div>
         {/* grid and <table></table> */}
-        <div className="mt-3">
-          <h1 className="text-xl">Ticket Information</h1>
-        </div>
-        <div className="grid sm:grid-cols-4 grid-cols-1 sm:gap-6 gap-1 py-2]">
+       
+        <div className="grid grid-cols-1 sm:gap-6 gap-1 py-2 pt-5 ">
           {/* Data table of tickets */}
           <div className="col-span-1">
             <div className="">
@@ -209,7 +286,8 @@ function ViewTicket() {
                   </p>{" "}
                 </div>
               </div>
-             
+
+              
             </div>
           </div>
           <div className="col-span-3">
@@ -331,6 +409,28 @@ function ViewTicket() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="mt-3 flex justify-between">
+          <div className="grid grid-cols-2 gap-1">
+                <button
+                  type="button"
+                  className="text-white bg-blue-700 hover:bg-blue-800 font-medium text-md px-10 py-2.5 my-2"
+                  onClick={
+                    ticket.status === "Closed"
+                      ? () => setIsOpen(true)
+                      : handleCloseClick
+                  }
+                >
+                  {ticket.status === "Closed" ? "Reply" : "Close"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsDelete(true)}
+                  class="text-red-800 border-red-700 border  hover:bg-red-800 hover:text-white font-medium text-md px-10 py-2.5 my-2"
+                >
+                  Delete
+                </button>
+              </div>
         </div>
       </div>
     </div>
