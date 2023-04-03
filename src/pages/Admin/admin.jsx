@@ -7,7 +7,7 @@ function Admin() {
   const reversedTickets = ticket.slice().reverse();
   const numOfTicket = ticket.length;
   const numberOfClosedTickets = ticket.filter((ticket) => ticket.status === "Closed").length;
-  const numberOfPendingTickets = ticket.filter((ticket) => ticket.status === "inreview").length;
+  const numberOfPendingTickets = ticket.filter((ticket) => ticket.status === "Pending").length;
 
   const fetchData = () => {
     instance.get(`/tickets`).then((res) => {
